@@ -1,5 +1,13 @@
 class SyncGravatarForExistingAvatarables < ActiveRecord::Migration[6.1]
   def change
+    begin
+      redis = Redis.new(url: 'redis://localhost:6379')
+      redis.ping
+      puts 'Successfully connected to Redis.'
+    rescue => e
+      puts "Error connecting to Redis: #{e.message}"
+    end
+
     return if GlobalConfigService.load('DISABLE_GRAVATAR', '').present?
 
     sync_user_avatars

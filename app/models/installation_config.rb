@@ -3,7 +3,6 @@
 # Table name: installation_configs
 #
 #  id               :bigint           not null, primary key
-#  locked           :boolean          default(TRUE), not null
 #  name             :string           not null
 #  serialized_value :jsonb            not null
 #  created_at       :datetime         not null
@@ -42,9 +41,17 @@ class InstallationConfig < ApplicationRecord
   end
 
   private
+  
+  def locked
+    self[:locked] || false # Retorna o valor de 'locked' ou false se não estiver definido
+  end
+
+  def locked=(value)
+    self[:locked] = value 
+  end
 
   def set_lock
-    self.locked = true if locked.nil?
+    self.locked = true if locked.nil? # Defina como true se não estiver definido
   end
 
   def clear_cache
